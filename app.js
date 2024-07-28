@@ -8,9 +8,16 @@ const app = express();
 const server = http.createServer(app);
 const io = new SocketServer(server);
 
-// Convert module URL to a file path
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+io.on("connection", function(socket) {
+    socket.on("send-location",function(data){
+        io.emit("receive-location",{id:socket.id,...data});
+    })
+    console.log("connected");
+});
 
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
